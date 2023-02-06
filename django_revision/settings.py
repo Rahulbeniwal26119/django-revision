@@ -129,9 +129,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "127.0.0.1:6379",
+        "LOCATION": [
+            "redis://127.0.0.1:6379/0"
+        ],
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PICKLE_VERSION": -1,
+            "SOCKET_CONNECT_TIMEOUT": 5, 
+            "SOCKET_TIMEOUT": 5, # TIMEOUT after connection for query
+            "IGNORE_EXCEPTION": True 
         }
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True # log the redis exceptions
