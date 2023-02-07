@@ -1,36 +1,38 @@
 from django.db import models
-from shared.caching.redis import get_hash_key, set_hash_key
-import json
+from django.db.models.query import QuerySet
+from core.utils.model_caching import set_test_model_cache
 
-# Create your models here.
+
+class RedisTestQuerySet(QuerySet):
+
+    @set_test_model_cache
+    def update(self, **kwargs):
+        return super().update(**kwargs)
+
+    @set_test_model_cache
+    def all(self):
+        return super().all()
+
+    @set_test_model_cache
+    def delete(self):
+        return super().delete()
 
 
 class RedisTestModel(models.Model):
+    objects = RedisTestQuerySet.as_manager()
+
     created_dtm = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=100)
-
-    model_cache_config = {
-        "hash_key": "RedisTestModel",
-        "hash_name": "hash_value"
-    }
 
     class Meta:
         db_table = 'redis_test_model'
 
-    @classmethod
-    def get_cached(cls):
-        return get_hash_key(RedisTestModel.model_cache_config["hash_name"],
-                            RedisTestModel.model_cache_config["hash_key"])
-
+    @set_test_model_cache
     def save(self, *args, **kwargs):
         # update the redis cache
-        super(RedisTestModel, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
-        values = json.dumps(list(RedisTestModel.objects.values("name")))
-
-        try:
-            set_hash_key(RedisTestModel.model_cache_config["hash_name"],
-                         RedisTestModel.model_cache_config["hash_key"], values)
-        except:
-            # silent the except lets play safe 
-            pass
+    # mixins use instance methods
+    @set_test_model_cache
+    def delete(self, *args, **kwargs):
+        return super().delete(*args, **kwargs)
