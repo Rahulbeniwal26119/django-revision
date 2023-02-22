@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "core",
-    "rest"
+    "rest",
+    "ipynbs"
 ]
 
 MIDDLEWARE = [
