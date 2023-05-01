@@ -6,11 +6,16 @@ from django.db import models
 class TestMode(models.Model):
     # db_column is used to change the column name in database and access that as name
     # editable=False is used to make field not editable from form
-    
-    name = models.CharField(max_length=255, db_column="user_name", db_index=True)
-    description = models.TextField(attname="desc", db_column="user_desc", blank=True, null=True, help_text="Description of the test mode")
+
+    name = models.CharField(max_length=255,
+                            db_column="user_name",
+                            db_index=True)
+    description = models.TextField(db_column="user_desc",
+                                   blank=True,
+                                   null=True,
+                                   help_text="Description of the test mode")
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    
+
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -21,19 +26,7 @@ class TestMode(models.Model):
         app_label = 'core'  # app is registered under which registered app
         db_table = "test_mode"  # table name where data to be stored
         get_latest_by = "created_at"  # get latest data by which field
-        ordering = ("created_at",)  # order by which field
+        ordering = ("created_at", )  # order by which field
         unique_together = ("name", "description")  # unique together
-        permissions = (("can_read", "Can read"),)  # permission
+        permissions = (("can_read", "Can read"), )  # permission
         verbose_name = "Test Mode"  # verbose name
-
-
-# class Product(models.Model):
-#     sku = models.CharField(max_length=255)
-#     name = models.CharField(max_length=255)
-#     price = models.DecimalField(max_digits=10, decimal_places=2)
-
-#     def __repr__(self):
-#         return self.name
-
-#     class Meta:
-#         app_label = 'core'  #
