@@ -8,5 +8,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_revision.settings")
 app = Celery("django_revision")
 
 # app.config_from_object('django.conf:settings', namespace='CELERY')
-app.config_from_object('celeryconfig', namespace='CELERY')
+app.config_from_object('django_revision.celeryconfig', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
